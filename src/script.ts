@@ -13,6 +13,7 @@
 import Statistics from './Statistics.js';
 import fetchData from './fetchData.js';
 import normalizeTransaction from './normalizeTransaction.js';
+import { ICountList } from './utils/countBy.js';
 
 function fillTable(transactions: ITransaction[]): void {
   const table = document.querySelector('#transactions tbody');
@@ -30,12 +31,25 @@ function fillTable(transactions: ITransaction[]): void {
   });
 }
 
+function fillList(list: ICountList, containerId: string): void {
+  const containerEl = document.getElementById(containerId);
+  if (containerEl) {
+    Object.keys(list).forEach((key) => {
+      containerEl.innerHTML += `
+        <p>${key}: ${list[key]}<p>
+      `;
+    });
+  }
+}
+
 function fillStatistics(transactions: ITransaction[]): void {
   const data = new Statistics(transactions);
   const totalEl = document.querySelector<HTMLElement>('#total span');
   if (totalEl) {
     totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
+  fillList(data.payment, 'payment');
+  fillList(data.status, 'status');
 }
 
 async function handleData() {

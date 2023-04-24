@@ -17,12 +17,24 @@ function fillTable(transactions) {
     `;
     });
 }
+function fillList(list, containerId) {
+    const containerEl = document.getElementById(containerId);
+    if (containerEl) {
+        Object.keys(list).forEach((key) => {
+            containerEl.innerHTML += `
+        <p>${key}: ${list[key]}<p>
+      `;
+        });
+    }
+}
 function fillStatistics(transactions) {
     const data = new Statistics(transactions);
     const totalEl = document.querySelector('#total span');
     if (totalEl) {
         totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+    fillList(data.payment, 'payment');
+    fillList(data.status, 'status');
 }
 async function handleData() {
     const data = await fetchData('https://api.origamid.dev/json/transacoes.json');
