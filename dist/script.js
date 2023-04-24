@@ -1,3 +1,4 @@
+import Statistics from './Statistics.js';
 import fetchData from './fetchData.js';
 import normalizeTransaction from './normalizeTransaction.js';
 function fillTable(transactions) {
@@ -16,12 +17,20 @@ function fillTable(transactions) {
     `;
     });
 }
+function fillStatistics(transactions) {
+    const data = new Statistics(transactions);
+    const totalEl = document.querySelector('#total span');
+    if (totalEl) {
+        totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+}
 async function handleData() {
     const data = await fetchData('https://api.origamid.dev/json/transacoes.json');
     if (!data)
         return;
     const transactions = data.map(normalizeTransaction);
     fillTable(transactions);
+    fillStatistics(transactions);
 }
 handleData();
 //# sourceMappingURL=script.js.map

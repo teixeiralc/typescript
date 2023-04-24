@@ -10,6 +10,7 @@
 // 5 - Organize o código em pequenos módulos.
 // 6 - Normalize os dados da API se achar necessário.
 
+import Statistics from './Statistics.js';
 import fetchData from './fetchData.js';
 import normalizeTransaction from './normalizeTransaction.js';
 
@@ -29,11 +30,20 @@ function fillTable(transactions: ITransaction[]): void {
   });
 }
 
+function fillStatistics(transactions: ITransaction[]): void {
+  const data = new Statistics(transactions);
+  const totalEl = document.querySelector<HTMLElement>('#total span');
+  if (totalEl) {
+    totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+}
+
 async function handleData() {
   const data = await fetchData<ITransactionAPI[]>('https://api.origamid.dev/json/transacoes.json');
   if (!data) return;
   const transactions = data.map(normalizeTransaction);
   fillTable(transactions);
+  fillStatistics(transactions);
 }
 
 handleData();
