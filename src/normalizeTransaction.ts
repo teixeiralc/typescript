@@ -1,7 +1,7 @@
 import currencyToNumber from './utils/currencyToNumber.js';
 import stringToDate from './utils/stringToDate.js';
 
-export default function normalizeTransaction(transaction: ITransactionAPI) {
+export default function normalizeTransaction(transaction: ITransactionAPI): ITransaction {
   return {
     nome: transaction.Nome,
     id: transaction.ID,

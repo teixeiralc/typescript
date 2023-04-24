@@ -19,7 +19,7 @@ declare global {
     nome: string;
     id: number;
     status: TTransactionStatus;
-    data: string;
+    data: Date;
     email: string;
     moeda: string;
     valor: number | null;
