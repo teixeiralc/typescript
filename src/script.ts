@@ -11,25 +11,12 @@
 // 6 - Normalize os dados da API se achar necessário.
 
 import fetchData from './fetchData.js';
-
-type TPaymentMethods = 'Cartão de Crédito' | 'Boleto';
-type TTransactionStatus = 'Paga' | 'Recusada pela operadora de cartão' | 'Aguardando pagamento' | 'Estornada';
-
-interface ITransactionAPI {
-  Nome: string;
-  ID: number;
-  Status: TTransactionStatus;
-  Data: string;
-  Email: string;
-  ['Valor (R$)']: string;
-  ['Cliente Novo']: number;
-  ['Forma de Pagamento']: TPaymentMethods;
-}
+import normalizeTransaction from './normalizeTransaction.js';
 
 async function handleData() {
   const data = await fetchData<ITransactionAPI[]>('https://api.origamid.dev/json/transacoes.json');
-  if (data) {
-    data.forEach((item) => item['Valor (R$)']);
-  }
+  if (!data) return;
+  const transactions = data.map(normalizeTransaction);
 }
+
 handleData();
