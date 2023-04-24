@@ -44,10 +44,17 @@ function fillList(list: ICountList, containerId: string): void {
 
 function fillStatistics(transactions: ITransaction[]): void {
   const data = new Statistics(transactions);
+
   const totalEl = document.querySelector<HTMLElement>('#total span');
   if (totalEl) {
     totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
+
+  const bestDayEl = document.querySelector<HTMLElement>('#day span');
+  if (bestDayEl) {
+    bestDayEl.innerText = data.bestDay[0];
+  }
+
   fillList(data.payment, 'payment');
   fillList(data.status, 'status');
 }

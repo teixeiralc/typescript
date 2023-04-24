@@ -33,6 +33,10 @@ function fillStatistics(transactions) {
     if (totalEl) {
         totalEl.innerText = data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+    const bestDayEl = document.querySelector('#day span');
+    if (bestDayEl) {
+        bestDayEl.innerText = data.bestDay[0];
+    }
     fillList(data.payment, 'payment');
     fillList(data.status, 'status');
 }
