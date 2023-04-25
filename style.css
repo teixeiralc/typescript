@@ -14,17 +14,17 @@ h1 {
   font-size: 1.5rem;
 }
 
-#slide-elements {
+#slide_elements {
   display: grid;
 }
 
-#slide-elements > * {
+#slide_elements > * {
   grid-area: 1/1;
   opacity: 0;
   visibility: none;
 }
 
-#slide-elements > .active {
+#slide_elements > .active {
   opacity: 1;
   visibility: visible;
 }
