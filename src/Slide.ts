@@ -10,6 +10,8 @@ export default class Slide {
   paused: boolean;
   timeout: Timeout | null;
   pausedTimeout: Timeout | null;
+  thumbItems: HTMLElement[] | null;
+  activeThumb: HTMLElement | null;
 
   constructor(container: Element, slides: Element[], controls: Element, time: number = 5000) {
     this.time = time;
@@ -21,6 +23,8 @@ export default class Slide {
     this.slides = slides;
     this.currentSlide = this.slides[this.index];
     this.controls = controls;
+    this.thumbItems = null;
+    this.activeThumb = null;
 
     this.timeout = null;
     this.paused = false;
@@ -40,6 +44,12 @@ export default class Slide {
     this.currentSlide = this.slides[index];
     localStorage.setItem('activeSlideIndex', String(this.index));
 
+    if (this.thumbItems) {
+      this.activeThumb = this.thumbItems[this.index];
+      this.thumbItems.forEach((el) => el.classList.remove('active'));
+      this.activeThumb.classList.add('active');
+    }
+
     this.slides.forEach((el) => this.hide(el));
     this.slides[index].classList.add('active');
 
@@ -52,6 +62,8 @@ export default class Slide {
   auto(time: number) {
     this.timeout?.clear();
     this.timeout = new Timeout(() => this.next(), time);
+
+    if (this.activeThumb) this.activeThumb.style.animationDuration = `${time}ms`;
   }
   autoVideo(video: HTMLVideoElement) {
     video.muted = true;
@@ -66,6 +78,7 @@ export default class Slide {
     this.pausedTimeout = new Timeout(() => {
       this.timeout?.pause();
       this.paused = true;
+      this.activeThumb?.classList.add('paused');
       if (this.currentSlide instanceof HTMLVideoElement) this.currentSlide.pause();
     }, 300);
   }
@@ -74,6 +87,7 @@ export default class Slide {
     if (this.paused) {
       this.paused = false;
       this.timeout?.continue();
+      this.activeThumb?.classList.remove('paused');
       if (this.currentSlide instanceof HTMLVideoElement) this.currentSlide.play();
     }
   }
@@ -101,8 +115,22 @@ export default class Slide {
     prevBtn.addEventListener('pointerup', () => this.prev());
     nextBtn.addEventListener('pointerup', () => this.next());
   }
+  private addThumbItems() {
+    const thumbContainer = document.createElement('div');
+    thumbContainer.id = 'slide_thumb';
+    for (let i = 0; i < this.slides.length; i++) {
+      thumbContainer.innerHTML += `
+        <span>
+          <span class="thumb_item"></span>
+        </span>
+      `;
+    }
+    this.controls.appendChild(thumbContainer);
+    this.thumbItems = Array.from(document.querySelectorAll('.thumb_item'));
+  }
   private init() {
     this.addControls();
+    this.addThumbItems();
     this.show(this.index);
   }
 }
